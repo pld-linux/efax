@@ -1,6 +1,6 @@
 diff -Nur efax-0.9.orig/Makefile efax-0.9/Makefile
---- efax-0.9.orig/Makefile	Fri Mar 12 02:00:34 1999
-+++ efax-0.9/Makefile	Wed Apr  7 11:05:40 1999
+--- efax-0.9.orig/Makefile	Tue Apr 13 10:10:52 1999
++++ efax-0.9/Makefile	Tue Apr 13 10:11:01 1999
 @@ -9,7 +9,7 @@
  # is undefined
  
@@ -10,9 +10,414 @@ diff -Nur efax-0.9.orig/Makefile efax-0.9/Makefile
  
  # Change the following to the destination directories for
  # binaries and man pages. Probably /usr/bin and /usr/man on
+diff -Nur efax-0.9.orig/efax.conf efax-0.9/efax.conf
+--- efax-0.9.orig/efax.conf	Thu Jan  1 01:00:00 1970
++++ efax-0.9/efax.conf	Tue Apr 13 10:18:50 1999
+@@ -0,0 +1,401 @@
++# --- Start of user configuration section --- 
++# 
++# Notes: 
++#
++#  - do not put spaces before or after the equal (=) signs.
++#
++#  - variables can also be set on the command line, for example:
++#       fax DEV=cua0 send file.ps
++#    or in a configuration file (see CONFIGFILES below)
++#
++
++# The names of the fax script, efax and efix, including full path
++# if necessary.
++
++FAX=/usr/bin/fax
++EFAX=/usr/bin/efax
++EFIX=/usr/bin/efix
++
++# The device to which the fax modem is connected (e.g. ttya for
++# /dev/ttya).  Use a dial-out (cua) device if available.  If
++# there are links to this device then all programs must use same
++# name or the UUCP locking mechanism will fail.  For example, if
++# /dev/modem is a link to /dev/cua1, then getty, uucp, kermit,
++# pppd, dip, etc. must *all* use either /dev/modem or /dev/cua1.
++
++DEV=modem
++
++# Your fax number in international format, 20 characters maximum.
++# Use only digits, spaces, and the "+" character.
++
++FROM="+0 000 000 0000"
++
++# Your name as it should appear on the page header.
++
++NAME="from PLD system"
++
++# The preferred page size for creating and printing faxes.
++# Allowed values are "letter", "legal", and "a4".
++
++# PAGE=letter
++# PAGE=legal
++PAGE=a4
++
++# The type of printer. Use 'pcl' for HP-PCL or 'ps' for
++# Postscript.  See definition of PRINT (below) for more options.
++
++PRTYPE=ps				# Postscript (e.g. Apple LaserWriter)
++# PRTYPE=pcl				# HP-PCL (e.g. HP LaserJet) 
++
++# The command to print image files from standard input.  Typically
++# this is "lpr" or "lp".
++
++PRCMD="lpr"
++
++# The command to view a Portable Gray Map (PGM) image from the
++# standard input.  Typically "xv -" or "xloadimage stdin".
++
++VIEWCMD="xloadimage stdin"		# best
++# VIEWCMD="pnmtoxwd | xwud"		# slower alternative
++# VIEWCMD="xv -"			# much slower alternative	
++
++# The name of the Ghostscript executable including full path if
++# necessary.  Only required if faxing Postscript files.
++
++GS=/usr/bin/gs
++
++# Dial string prefix and suffix such as T for tone dialing, P for
++# pulse dialing, 9 to get an external line, commas for delays or
++# W to wait for dial tone.  See definition of TELCVT below if you
++# have more complex requirements.
++
++DIALPREFIX="T"
++DIALSUFFIX=""
++
++# The name(s) of lock file(s) according to your system's
++# conventions. Protect with single quotes for delayed evaluation.
++# Add a leading '#' to the file name to use binary format.
++
++LOCK='-x /var/lock/LCK..$DEV' 			# modern systems
++# LOCK='-x /usr/spool/uucp/LCK..$DEV'		# older systems
++# LOCK='-x /var/lock/LCK..$DEV -x /var/spool/uucp/LCK..$DEV' # both
++# LOCK='-x #/usr/spool/uucp/LCK..$DEV'		# binary format
++# LOCK='-x /usr/spool/locks/LK.047.040.011'	# SysV style names
++# LOCK=''					# no lock file
++
++# Uncomment one of the following lines to force xon/xoff flow
++# control only if you have one of the types of modems listed.
++
++# FCINIT='-j\Q4'		# AT&T (Dataport, Paradyne)
++# FCINIT='-j\Q1'		# Motorola (Power Modem, 3400 Pro,...)
++# FCINIT='-j*F1'		# QuickComm (Spirit II)
++# FCINIT='-j&H2'		# USR (Courier, Sportster)
++# FCINIT='-or'			# Multi-Tech (for bit reversal)
++
++# ****************************************************************
++# The remaining options probably won't need to be changed.
++# ****************************************************************
++
++# Configuration files that are sourced if they exist.  Comment
++# out if you don't need to use config files. Warning: any type of
++# shell command in these files will be executed.
++
++CONFIGFILES="/etc/efax.rc ${HOME:-~}/.efaxrc ./.efaxrc"
++
++# A command that will generate unique names for logs and received
++# files.  'date +%m%d%H%M%S' works on most systems.  Protect with
++# single quotes.
++
++TSTAMP='date +%m%d%H%M%S'
++# TSTAMP='echo $$'		# alternative - use process number
++
++# Shell command to convert aliases to phone numbers when sending
++# faxes.  When executed $1 will be the alias and $f the file name
++# to search.  The example below uses a directory file where alias
++# lines start with the keyword "fax" followed by the alias in
++# parentheses and a colon.  The remainder of the line is taken to
++# be the phone number. Other lines are ignored.  For example, if
++# one of the files in DIRFILES (defined below) contained the line
++# "fax(kpmg): 691-3031", you could use the command "fax send kpmg
++# invoice.24". Protect with single quotes.
++
++LOOKUP='eval sed -n -e "/^fax($1):/{" -e "s/^[^:]*://p" -eq -e"}" $f'
++
++# List of telephone directory file(s) to be searched.  The
++# default is the file .faxdir in the user's home directory.
++
++DIRFILES="${HOME:-.}/.faxdir"
++
++# Shell command to convert phone numbers to dial strings.  This
++# lets you to store numbers without the long distance or
++# alternate carrier access codes, passwords, accounting digits,
++# etc.  In the examples below this is used to convert numbers
++# beginning with '+'; the first substitution handles same-country
++# calls and the second handles international calls.
++
++TELCVT='sed -e s/+48/0/ -e s/+/00/'	# Polish
++# TELCVT='sed -e s/+1/1/ -e s/+/011/'	# North America
++# TELCVT='sed -e s/+61/0/ -e s/+/0011/' # Australia
++# TELCVT='sed -e s/+44/0/ -e s/+/00/'	# UK
++# TELCVT='sed -e s/+49/0/ -e s/+/00/'	# Germany
++# TELCVT='sed -e s/+852// -e s/+/001/'	# Hong Kong
++# TELCVT='sed -e s/+33// -e s/+/19W/'	# France (?)
++# TELCVT='sed -e s/+34/0/ -e s/+/07W/'	# Spain
++# TELCVT='sed -e s/+1/10288/'		# use AT&T
++# TELCVT='sed -e s/+/T82W1682W9W/'	# get out of PBX
++
++# efix options to use a bitmap font for text-to-fax conversion.
++# The option -l66 puts 66 lines of text per page, -d1,1 sets 1
++# inch top & left margin.  Comment these out to use the built-in
++# font. Use "fax makefont" to make bitmap fonts from Postscript
++# fonts.
++
++# TEXTFONT="-l66 -d1,1 -f /usr/bin/efaxfont"
++
++# efax options to specify a different font for headers. Generate
++# using "fax makefont."
++
++# HDRFONT="-f /usr/bin/efaxfont"
++
++# Dimensions of page sizes.
++
++PAGE_letter="8.465x11in"	# fax width x letter length
++PAGE_legal="8.465x14in"		# fax width x legal length
++PAGE_a4="21x29.7cm"		# ISO A4
++
++# Default resolution for converting to fax format. Can only be
++# 204x196 or 204x98.
++
++RES=204x196			# default "Fine" resolution (196 lpi)
++# RES=204x98			# standard resolution (98 lpi)
++
++# When the print and view commands below are executed, $f will be
++# the input file name and $PAGEDIM will be one of the above page
++# dimensions. Protect with single quotes.
++
++# PRINT: A command to convert fax files to a printable format.
++# For printers other than Postscript or PCL you can use efix's
++# PBM output and an appropriate pbm filter (such as pbmtoepson)
++# or efix's Postsript output and Ghostscript as a filter. Change
++# the scaling (-s) and displacement (-d) options as required to
++# fit the image onto the area your printer can print.
++
++PRINT='$EFIX -ve -p$PAGEDIM -r300 -s0.98 -d0,0.125 -o$PRTYPE $f'
++
++# example using pbm utilities:
++# PRINT='$EFIX -ve -p$PAGEDIM -r60x72 -opbm $f | pbmtoepson'
++
++# example using Ghostscript:
++# PRINT='$EFIX -ve -p$PAGEDIM -r120x144 -ops $f | \
++#	$GS -q  -sPAPERSIZE=$PAGE -sDEVICE=epson -r120x144 \
++#	-dNOPAUSE -dSAFER -sOutputFile=- - '
++
++# VIEW: A command to convert fax files to PGM format for
++# previewing.  efix's pgm output reduces image dimensions by 4X.
++
++# VIEW='$EFIX -ve -p$PAGEDIM -r200 -opgm $f' 	# 50dpi: fast, whole-page view
++VIEW='$EFIX -ve -p$PAGEDIM -r300 -opgm $f'	# 75dpi: slower, readable size
++
++# Commands to set up modem.  "-iZ -i&FE&D2S7=120 -i&C0"
++# works with almost all modems.  See the efax(1) man page for
++# details.
++
++INIT="-iZ -i&FE&D2S7=120 -i&C0"
++
++# Command(s) to reset modem when efax finishes. "-kZ" works in
++# almost all cases.
++
++RESET="-kZ"
++# RESET="-kZ -k&F+FCLASS=0"	# for modems that stay in fax mode after reset
++
++# Speaker mode(M) and loudness(L). Mn sets speaker mode where n
++# means: 0:never, 1:until carrier, 2:always, 3:on receive only.
++
++SPKR="-iM1L0"
++
++# Options to use a particular command sets.  Normally efax
++# selects the command set based on the modem's capabilities.  Use
++# -o1 to force Class 1, -o2 for Class 2 and -o0 for Class 2.0.
++
++# CLASSINIT="-o1"	# Class 1
++# CLASSINIT=""		# Class 2
++# CLASSINIT="-o0"	# Class 2.0
++
++# The modem's capabilities for sending faxes.  Normally efax
++# chooses these by querying the modem.  "-c 1,3,0,0,0,0,0,0"
++# forces 9600 bps maximum speed.  See the efax(1) man page for a
++# description of the fields.
++
++# TXCAP="-c 1,3,0,2,0,0,0,0"
++
++# Capabilities for receiving faxes.  Usually the same as TXCAP.
++# If your modem only receives at 4800 bps use "-c 1,1,0,0,0,0,0,0".
++
++# RXCAP="$TXCAP"
++
++# Additional options required only for transmit or only for
++# receive.  None normally required.
++
++RXINIT=""
++TXINIT=""
++
++# Command to make a date for the page header. Protect with single
++# quotes.  'date "+%Y/%m/%d %H:%M"' works on most systems.
++
++DATECMD='date "+%Y/%m/%d %H:%M"'	# YYYY/MM/DD HH:MM (24hour)
++# DATECMD='date'			# longer, more readable
++
++# Page header format.  You may use $DATE, $NAME, $FROM, $TO, and
++# "%d/%d" (for page number and count).  Protect with single
++# quotes.  Example: '$DATE $FROM $NAME p. %d/%d'.
++
++HDR='$DATE     $FROM      $NAME     p. %d/%d'
++
++# BUSYRETRIES is a list of delays in seconds between attempts to
++# redial busy numbers.  Comment out if you don't want to retry
++# busy numbers.
++
++BUSYRETRIES="30 60 120 300 60 600 60 60 1200 60 60"
++
++# FAILRETRIES is a list of delays in seconds between attempts to
++# retry failed transmissions.  Retries are only attempted if at
++# least one page was sent in the previous attempt. Retries
++# include only pages not already sent. Comment out if you don't
++# want to retry failed transmissions.
++
++FAILRETRIES="300 300"	# try two more times at 5 minute intervals
++
++# Command to run another program (efax) at a higher-than-normal
++# scheduling priority.  This command isn't used if it fails
++# (e.g. because the current user isn't privileged).  Comment this
++# out if it causes problems.
++
++NICE="nice -n -10"
++
++# Standard versions of commands that are often aliased.
++
++RM="/bin/rm -f"
++LS="/bin/ls"
++
++# Messages to display.  VERB sets the messages displayed (stderr)
++# and VERBLOG the messages written to log files (stdout).
++
++VERB="ewin"		# show errors, warnings, progress & negotiation
++VERBLOG="chewmainrxtf"	# log everything
++
++# ****************************************************************
++# The remaining configuration options apply only to the `fax
++# answer' command.  You can ignore these if you will only be
++# running efax manually.  See "USING INIT TO RUN EFAX" in the
++# efax man page for more information.
++# ****************************************************************
++
++# device or file where fatal error messages should be written
++
++CONSOLE=/dev/console
++
++# The directory to store incoming faxes and log files.  This directory
++# should already exist and be writable by the user(s) of this script.
++
++FAXDIR=/var/spool/fax
++LOGDIR=/var/log/fax
++
++# The strftime(3) pattern that generates the file name for
++# received files.  For example, at 10:45:36 on February 25,
++# "%m%d%H%M%S" would produce 0225104536, "%j-%H%M" would produce
++# 056-1045, and %d%b%H%M 25Feb1045.
++
++ANSFNAME="%m%d%H%M%S"
++
++# umask for received files. Use 022 to allow anyone to retrieve faxes.
++
++UMASK=022
++
++# The user to be sent mail when a fax is received.
++
++FAXMGR=root
++
++# The sendmail executable including full path if necessary.  Only
++# required if forwarding received faxes by e-mail in $NOTIFY.
++
++SENDMAIL=/usr/sbin/sendmail
++
++# The command to execute when a fax is received.  Normally this
++# sends FAXMGR e-mail or prints the received fax.  The variable
++# $f will be the name of the log file, $FILES will contain the
++# names of the received files, and $REMID will have the remote ID
++# string or '?' if none. The faxmail function will e-mail the fax
++# as MIME image/tiff attachments.  Comment this out to do
++# nothing.  Protect with single quotes.
++
++NOTIFY='faxmail "$REMID" "$f" $FILES | $SENDMAIL $FAXMGR'
++# NOTIFY='mail -s "fax/message from $REMID: $FILES" $FAXMGR <$f'
++# NOTIFY='lpr $f ; $FAX print $OPT $FILES'
++
++# The number of rings to wait before answering.
++
++ANSRINGS=1
++
++# If you want to enable fax/data adaptive answer (AA) read the
++# efax man page and define DATAINIT to be the options that enable
++# AA. Note: AA does not work properly on some (2400/9600) modems
++# unless the modem initialization is done at 2400 bps (not
++# possible with efax). USR modems do not support modem adaptive
++# answer (+FAE=) in Class 1.  &C1 enables most modems' DCD line
++# so a signal can be sent to shells when a call is dropped.  You
++# must also define DCMD (see below).
++
++DATAOPT="-j&C1 -j+FCLASS=0 -jS7=30"
++# DATAINIT="$DATAOPT -j+FAE=1"		# Class 1 modem adaptive answer
++# DATAINIT="$DATAOPT -j+FAA=1"		# Class 2[.0] modem adaptive answer
++# DATAINIT="$DATAOPT -oa"		# software adaptive answer
++# DATAINIT="$DATAOPT"			# data-only answer
++
++# If you have a voice modem and want to answer in voice mode
++# define VOICEINIT to be the options that enable voice mode.  You
++# must also set VCMD below. Voice support is not yet available.
++
++# VOICEINIT="-j#CLS=8"			# Rockwell voice modems
++# VOICEINIT="-jM2L2#CLS=8#VLS=4"	#    with speaker on
++
++# Argument to exec(2) of "/bin/sh -c" for incoming data calls.
++# This command will usually exec getty(8) but can include other
++# commands to set up the serial port, etc.  Up to 6 %d arguments
++# are replaced by the baud rate following the CONNECT response
++# from the modem or 19200 if none.  If using getty_ps ensure
++# /etc/gettydefs has entries for all possible %d values
++# (e.g. 19200). Use 'nice' if required to reduce any special
++# priority set by NICE.
++
++DCMD="exec /sbin/getty -h $DEV %d vt100"	# for getty_ps (Linux)
++# DCMD="exec /sbin/agetty -h $DEV %d vt100"	# for agetty (Linux)
++# DCMD="exec pppd $DEV %d"			# start PPP server
++
++# Argument to exec(2) of "/bin/sh -c" for incoming voice calls.
++# This command will usually be a shell script that interacts with
++# the caller by using efone to play/record audio and detect DTMF
++# tones.  Up to 6 %d arguments are replaced by the modem file
++# descriptor.  VCMD can "exec fax reanswer" to switch to fax or
++# data mode if required.
++
++FONE=/usr/bin/fone				# minimal voice mail
++VCMD="exec $FONE %d"
++
++# The owner.group and mode to which "fax answer" sets the serial
++# device.  This allows non-root processes to grab the device from
++# efax even if a previous process (e.g. login) has changed it.
++# Comment out if you don't need to reset device ownership.
++
++OWNER=root.tty		# typical
++MODE=666		# anybody
++# MODE=660		# only owner & group
++
++# Regular expression for efax exit codes in log files that will
++# *not* be saved.  For example, use [145] to ignore exits due to
++# `locked' (1), `no modem' (4), and `signal' (5) conditions
++
++NOLOG='[145]'
++
++# ****************************************************************
++# --- End of user configuration section ---
++# ****************************************************************
 diff -Nur efax-0.9.orig/efaxio.c efax-0.9/efaxio.c
---- efax-0.9.orig/efaxio.c	Tue Mar  2 07:15:44 1999
-+++ efax-0.9/efaxio.c	Wed Apr  7 11:10:52 1999
+--- efax-0.9.orig/efaxio.c	Tue Apr 13 10:10:52 1999
++++ efax-0.9/efaxio.c	Tue Apr 13 10:11:01 1999
 @@ -2,6 +2,7 @@
  #include <signal.h>    
  #include <stdio.h>
@@ -22,56 +427,414 @@ diff -Nur efax-0.9.orig/efaxio.c efax-0.9/efaxio.c
  #include "efaxio.h"		/* EFAX */
  #include "efaxmsg.h"
 diff -Nur efax-0.9.orig/fax efax-0.9/fax
---- efax-0.9.orig/fax	Wed Mar 24 09:07:28 1999
-+++ efax-0.9/fax	Wed Apr  7 11:07:28 1999
-@@ -17,9 +17,9 @@
- # The names of the fax script, efax and efix, including full path
- # if necessary.
+--- efax-0.9.orig/fax	Tue Apr 13 10:10:52 1999
++++ efax-0.9/fax	Tue Apr 13 10:16:11 1999
+@@ -3,406 +3,9 @@
+ # fax - script to make, send, receive, view or print a fax
+ # Copyright 1993-1999 by Ed Casas 
+ # 
+-# --- Start of user configuration section --- 
+-# 
+-# Notes: 
+-#
+-#  - do not put spaces before or after the equal (=) signs.
+-#
+-#  - variables can also be set on the command line, for example:
+-#       fax DEV=cua0 send file.ps
+-#    or in a configuration file (see CONFIGFILES below)
+-#
  
+-# The names of the fax script, efax and efix, including full path
+-# if necessary.
+-
 -FAX=fax
 -EFAX=efax
 -EFIX=efix
-+FAX=/usr/bin/fax
-+EFAX=/usr/bin/efax
-+EFIX=/usr/bin/efix
- 
- # The device to which the fax modem is connected (e.g. ttya for
- # /dev/ttya).  Use a dial-out (cua) device if available.  If
-@@ -28,23 +28,23 @@
- # /dev/modem is a link to /dev/cua1, then getty, uucp, kermit,
- # pppd, dip, etc. must *all* use either /dev/modem or /dev/cua1.
- 
+-
+-# The device to which the fax modem is connected (e.g. ttya for
+-# /dev/ttya).  Use a dial-out (cua) device if available.  If
+-# there are links to this device then all programs must use same
+-# name or the UUCP locking mechanism will fail.  For example, if
+-# /dev/modem is a link to /dev/cua1, then getty, uucp, kermit,
+-# pppd, dip, etc. must *all* use either /dev/modem or /dev/cua1.
+-
 -DEV=cua1
-+DEV=modem
- 
- # Your fax number in international format, 20 characters maximum.
- # Use only digits, spaces, and the "+" character.
- 
+-
+-# Your fax number in international format, 20 characters maximum.
+-# Use only digits, spaces, and the "+" character.
+-
 -FROM="+1 800 555 5555"
-+FROM="+0 000 000 0000"
- 
- # Your name as it should appear on the page header.
- 
+-
+-# Your name as it should appear on the page header.
+-
 -NAME="Put Your Name Here"
-+NAME="from PLD system"
- 
- # The preferred page size for creating and printing faxes.
- # Allowed values are "letter", "legal", and "a4".
- 
+-
+-# The preferred page size for creating and printing faxes.
+-# Allowed values are "letter", "legal", and "a4".
+-
 -PAGE=letter
-+# PAGE=letter
- # PAGE=legal
+-# PAGE=legal
 -# PAGE=a4
-+PAGE=a4
- 
- # The type of printer. Use 'pcl' for HP-PCL or 'ps' for
- # Postscript.  See definition of PRINT (below) for more options.
-@@ -67,7 +67,7 @@
- # The name of the Ghostscript executable including full path if
- # necessary.  Only required if faxing Postscript files.
- 
+-
+-# The type of printer. Use 'pcl' for HP-PCL or 'ps' for
+-# Postscript.  See definition of PRINT (below) for more options.
+-
+-PRTYPE=ps				# Postscript (e.g. Apple LaserWriter)
+-# PRTYPE=pcl				# HP-PCL (e.g. HP LaserJet) 
+-
+-# The command to print image files from standard input.  Typically
+-# this is "lpr" or "lp".
+-
+-PRCMD="lpr"
+-
+-# The command to view a Portable Gray Map (PGM) image from the
+-# standard input.  Typically "xv -" or "xloadimage stdin".
+-
+-VIEWCMD="xloadimage stdin"		# best
+-# VIEWCMD="pnmtoxwd | xwud"		# slower alternative
+-# VIEWCMD="xv -"			# much slower alternative	
+-
+-# The name of the Ghostscript executable including full path if
+-# necessary.  Only required if faxing Postscript files.
+-
 -GS=gs
-+GS=/usr/bin/gs
+-
+-# Dial string prefix and suffix such as T for tone dialing, P for
+-# pulse dialing, 9 to get an external line, commas for delays or
+-# W to wait for dial tone.  See definition of TELCVT below if you
+-# have more complex requirements.
+-
+-DIALPREFIX="T"
+-DIALSUFFIX=""
+-
+-# The name(s) of lock file(s) according to your system's
+-# conventions. Protect with single quotes for delayed evaluation.
+-# Add a leading '#' to the file name to use binary format.
+-
+-LOCK='-x /var/lock/LCK..$DEV' 			# modern systems
+-# LOCK='-x /usr/spool/uucp/LCK..$DEV'		# older systems
+-# LOCK='-x /var/lock/LCK..$DEV -x /var/spool/uucp/LCK..$DEV' # both
+-# LOCK='-x #/usr/spool/uucp/LCK..$DEV'		# binary format
+-# LOCK='-x /usr/spool/locks/LK.047.040.011'	# SysV style names
+-# LOCK=''					# no lock file
+-
+-# Uncomment one of the following lines to force xon/xoff flow
+-# control only if you have one of the types of modems listed.
+-
+-# FCINIT='-j\Q4'		# AT&T (Dataport, Paradyne)
+-# FCINIT='-j\Q1'		# Motorola (Power Modem, 3400 Pro,...)
+-# FCINIT='-j*F1'		# QuickComm (Spirit II)
+-# FCINIT='-j&H2'		# USR (Courier, Sportster)
+-# FCINIT='-or'			# Multi-Tech (for bit reversal)
+-
+-# ****************************************************************
+-# The remaining options probably won't need to be changed.
+-# ****************************************************************
+-
+-# Configuration files that are sourced if they exist.  Comment
+-# out if you don't need to use config files. Warning: any type of
+-# shell command in these files will be executed.
+-
+-CONFIGFILES="/etc/efax.rc ${HOME:-~}/.efaxrc ./.efaxrc"
+-
+-# A command that will generate unique names for logs and received
+-# files.  'date +%m%d%H%M%S' works on most systems.  Protect with
+-# single quotes.
+-
+-TSTAMP='date +%m%d%H%M%S'
+-# TSTAMP='echo $$'		# alternative - use process number
+-
+-# Shell command to convert aliases to phone numbers when sending
+-# faxes.  When executed $1 will be the alias and $f the file name
+-# to search.  The example below uses a directory file where alias
+-# lines start with the keyword "fax" followed by the alias in
+-# parentheses and a colon.  The remainder of the line is taken to
+-# be the phone number. Other lines are ignored.  For example, if
+-# one of the files in DIRFILES (defined below) contained the line
+-# "fax(kpmg): 691-3031", you could use the command "fax send kpmg
+-# invoice.24". Protect with single quotes.
+-
+-LOOKUP='eval sed -n -e "/^fax($1):/{" -e "s/^[^:]*://p" -eq -e"}" $f'
+-
+-# List of telephone directory file(s) to be searched.  The
+-# default is the file .faxdir in the user's home directory.
+-
+-DIRFILES="${HOME:-.}/.faxdir"
+-
+-# Shell command to convert phone numbers to dial strings.  This
+-# lets you to store numbers without the long distance or
+-# alternate carrier access codes, passwords, accounting digits,
+-# etc.  In the examples below this is used to convert numbers
+-# beginning with '+'; the first substitution handles same-country
+-# calls and the second handles international calls.
+-
+-TELCVT='sed -e s/+1/1/ -e s/+/011/'	# North America
+-# TELCVT='sed -e s/+61/0/ -e s/+/0011/' # Australia
+-# TELCVT='sed -e s/+44/0/ -e s/+/00/'	# UK
+-# TELCVT='sed -e s/+49/0/ -e s/+/00/'	# Germany
+-# TELCVT='sed -e s/+852// -e s/+/001/'	# Hong Kong
+-# TELCVT='sed -e s/+33// -e s/+/19W/'	# France (?)
+-# TELCVT='sed -e s/+34/0/ -e s/+/07W/'	# Spain
+-# TELCVT='sed -e s/+1/10288/'		# use AT&T
+-# TELCVT='sed -e s/+/T82W1682W9W/'	# get out of PBX
+-
+-# efix options to use a bitmap font for text-to-fax conversion.
+-# The option -l66 puts 66 lines of text per page, -d1,1 sets 1
+-# inch top & left margin.  Comment these out to use the built-in
+-# font. Use "fax makefont" to make bitmap fonts from Postscript
+-# fonts.
+-
+-# TEXTFONT="-l66 -d1,1 -f /usr/bin/efaxfont"
+-
+-# efax options to specify a different font for headers. Generate
+-# using "fax makefont."
+-
+-# HDRFONT="-f /usr/bin/efaxfont"
+-
+-# Dimensions of page sizes.
+-
+-PAGE_letter="8.465x11in"	# fax width x letter length
+-PAGE_legal="8.465x14in"		# fax width x legal length
+-PAGE_a4="21x29.7cm"		# ISO A4
+-
+-# Default resolution for converting to fax format. Can only be
+-# 204x196 or 204x98.
+-
+-RES=204x196			# default "Fine" resolution (196 lpi)
+-# RES=204x98			# standard resolution (98 lpi)
+-
+-# When the print and view commands below are executed, $f will be
+-# the input file name and $PAGEDIM will be one of the above page
+-# dimensions. Protect with single quotes.
+-
+-# PRINT: A command to convert fax files to a printable format.
+-# For printers other than Postscript or PCL you can use efix's
+-# PBM output and an appropriate pbm filter (such as pbmtoepson)
+-# or efix's Postsript output and Ghostscript as a filter. Change
+-# the scaling (-s) and displacement (-d) options as required to
+-# fit the image onto the area your printer can print.
+-
+-PRINT='$EFIX -ve -p$PAGEDIM -r300 -s0.98 -d0,0.125 -o$PRTYPE $f'
+-
+-# example using pbm utilities:
+-# PRINT='$EFIX -ve -p$PAGEDIM -r60x72 -opbm $f | pbmtoepson'
+-
+-# example using Ghostscript:
+-# PRINT='$EFIX -ve -p$PAGEDIM -r120x144 -ops $f | \
+-#	$GS -q  -sPAPERSIZE=$PAGE -sDEVICE=epson -r120x144 \
+-#	-dNOPAUSE -dSAFER -sOutputFile=- - '
+-
+-# VIEW: A command to convert fax files to PGM format for
+-# previewing.  efix's pgm output reduces image dimensions by 4X.
+-
+-# VIEW='$EFIX -ve -p$PAGEDIM -r200 -opgm $f' 	# 50dpi: fast, whole-page view
+-VIEW='$EFIX -ve -p$PAGEDIM -r300 -opgm $f'	# 75dpi: slower, readable size
+-
+-# Commands to set up modem.  "-iZ -i&FE&D2S7=120 -i&C0"
+-# works with almost all modems.  See the efax(1) man page for
+-# details.
+-
+-INIT="-iZ -i&FE&D2S7=120 -i&C0"
+-
+-# Command(s) to reset modem when efax finishes. "-kZ" works in
+-# almost all cases.
+-
+-RESET="-kZ"
+-# RESET="-kZ -k&F+FCLASS=0"	# for modems that stay in fax mode after reset
+-
+-# Speaker mode(M) and loudness(L). Mn sets speaker mode where n
+-# means: 0:never, 1:until carrier, 2:always, 3:on receive only.
+-
+-SPKR="-iM1L0"
+-
+-# Options to use a particular command sets.  Normally efax
+-# selects the command set based on the modem's capabilities.  Use
+-# -o1 to force Class 1, -o2 for Class 2 and -o0 for Class 2.0.
+-
+-# CLASSINIT="-o1"	# Class 1
+-# CLASSINIT=""		# Class 2
+-# CLASSINIT="-o0"	# Class 2.0
+-
+-# The modem's capabilities for sending faxes.  Normally efax
+-# chooses these by querying the modem.  "-c 1,3,0,0,0,0,0,0"
+-# forces 9600 bps maximum speed.  See the efax(1) man page for a
+-# description of the fields.
+-
+-# TXCAP="-c 1,3,0,2,0,0,0,0"
+-
+-# Capabilities for receiving faxes.  Usually the same as TXCAP.
+-# If your modem only receives at 4800 bps use "-c 1,1,0,0,0,0,0,0".
+-
+-# RXCAP="$TXCAP"
+-
+-# Additional options required only for transmit or only for
+-# receive.  None normally required.
+-
+-RXINIT=""
+-TXINIT=""
+-
+-# Command to make a date for the page header. Protect with single
+-# quotes.  'date "+%Y/%m/%d %H:%M"' works on most systems.
+-
+-DATECMD='date "+%Y/%m/%d %H:%M"'	# YYYY/MM/DD HH:MM (24hour)
+-# DATECMD='date'			# longer, more readable
+-
+-# Page header format.  You may use $DATE, $NAME, $FROM, $TO, and
+-# "%d/%d" (for page number and count).  Protect with single
+-# quotes.  Example: '$DATE $FROM $NAME p. %d/%d'.
+-
+-HDR='$DATE     $FROM      $NAME     p. %d/%d'
+-
+-# BUSYRETRIES is a list of delays in seconds between attempts to
+-# redial busy numbers.  Comment out if you don't want to retry
+-# busy numbers.
+-
+-BUSYRETRIES="30 60 120 300 60 600 60 60 1200 60 60"
+-
+-# FAILRETRIES is a list of delays in seconds between attempts to
+-# retry failed transmissions.  Retries are only attempted if at
+-# least one page was sent in the previous attempt. Retries
+-# include only pages not already sent. Comment out if you don't
+-# want to retry failed transmissions.
+-
+-FAILRETRIES="300 300"	# try two more times at 5 minute intervals
+-
+-# Command to run another program (efax) at a higher-than-normal
+-# scheduling priority.  This command isn't used if it fails
+-# (e.g. because the current user isn't privileged).  Comment this
+-# out if it causes problems.
+-
+-NICE="nice -n -10"
+-
+-# Standard versions of commands that are often aliased.
+-
+-RM="/bin/rm -f"
+-LS="/bin/ls"
+-
+-# Messages to display.  VERB sets the messages displayed (stderr)
+-# and VERBLOG the messages written to log files (stdout).
+-
+-VERB="ewin"		# show errors, warnings, progress & negotiation
+-VERBLOG="chewmainrxtf"	# log everything
+-
+-# ****************************************************************
+-# The remaining configuration options apply only to the `fax
+-# answer' command.  You can ignore these if you will only be
+-# running efax manually.  See "USING INIT TO RUN EFAX" in the
+-# efax man page for more information.
+-# ****************************************************************
+-
+-# device or file where fatal error messages should be written
+-
+-CONSOLE=/dev/console
+-
+-# The directory to store incoming faxes and log files.  This directory
+-# should already exist and be writable by the user(s) of this script.
+-
+-FAXDIR=/var/spool/fax
+-LOGDIR=/var/log/fax
+-
+-# The strftime(3) pattern that generates the file name for
+-# received files.  For example, at 10:45:36 on February 25,
+-# "%m%d%H%M%S" would produce 0225104536, "%j-%H%M" would produce
+-# 056-1045, and %d%b%H%M 25Feb1045.
+-
+-ANSFNAME="%m%d%H%M%S"
+-
+-# umask for received files. Use 022 to allow anyone to retrieve faxes.
+-
+-UMASK=022
+-
+-# The user to be sent mail when a fax is received.
+-
+-FAXMGR=root
+-
+-# The sendmail executable including full path if necessary.  Only
+-# required if forwarding received faxes by e-mail in $NOTIFY.
+-
+-SENDMAIL=/usr/sbin/sendmail
+-
+-# The command to execute when a fax is received.  Normally this
+-# sends FAXMGR e-mail or prints the received fax.  The variable
+-# $f will be the name of the log file, $FILES will contain the
+-# names of the received files, and $REMID will have the remote ID
+-# string or '?' if none. The faxmail function will e-mail the fax
+-# as MIME image/tiff attachments.  Comment this out to do
+-# nothing.  Protect with single quotes.
+-
+-NOTIFY='faxmail "$REMID" "$f" $FILES | $SENDMAIL $FAXMGR'
+-# NOTIFY='mail -s "fax/message from $REMID: $FILES" $FAXMGR <$f'
+-# NOTIFY='lpr $f ; $FAX print $OPT $FILES'
+-
+-# The number of rings to wait before answering.
+-
+-ANSRINGS=1
+-
+-# If you want to enable fax/data adaptive answer (AA) read the
+-# efax man page and define DATAINIT to be the options that enable
+-# AA. Note: AA does not work properly on some (2400/9600) modems
+-# unless the modem initialization is done at 2400 bps (not
+-# possible with efax). USR modems do not support modem adaptive
+-# answer (+FAE=) in Class 1.  &C1 enables most modems' DCD line
+-# so a signal can be sent to shells when a call is dropped.  You
+-# must also define DCMD (see below).
+-
+-DATAOPT="-j&C1 -j+FCLASS=0 -jS7=30"
+-# DATAINIT="$DATAOPT -j+FAE=1"		# Class 1 modem adaptive answer
+-# DATAINIT="$DATAOPT -j+FAA=1"		# Class 2[.0] modem adaptive answer
+-# DATAINIT="$DATAOPT -oa"		# software adaptive answer
+-# DATAINIT="$DATAOPT"			# data-only answer
+-
+-# If you have a voice modem and want to answer in voice mode
+-# define VOICEINIT to be the options that enable voice mode.  You
+-# must also set VCMD below. Voice support is not yet available.
+-
+-# VOICEINIT="-j#CLS=8"			# Rockwell voice modems
+-# VOICEINIT="-jM2L2#CLS=8#VLS=4"	#    with speaker on
+-
+-# Argument to exec(2) of "/bin/sh -c" for incoming data calls.
+-# This command will usually exec getty(8) but can include other
+-# commands to set up the serial port, etc.  Up to 6 %d arguments
+-# are replaced by the baud rate following the CONNECT response
+-# from the modem or 19200 if none.  If using getty_ps ensure
+-# /etc/gettydefs has entries for all possible %d values
+-# (e.g. 19200). Use 'nice' if required to reduce any special
+-# priority set by NICE.
+-
+-DCMD="exec /sbin/getty -h $DEV %d vt100"	# for getty_ps (Linux)
+-# DCMD="exec /sbin/agetty -h $DEV %d vt100"	# for agetty (Linux)
+-# DCMD="exec pppd $DEV %d"			# start PPP server
+-
+-# Argument to exec(2) of "/bin/sh -c" for incoming voice calls.
+-# This command will usually be a shell script that interacts with
+-# the caller by using efone to play/record audio and detect DTMF
+-# tones.  Up to 6 %d arguments are replaced by the modem file
+-# descriptor.  VCMD can "exec fax reanswer" to switch to fax or
+-# data mode if required.
+-
+-FONE=/usr/bin/fone				# minimal voice mail
+-VCMD="exec $FONE %d"
+-
+-# The owner.group and mode to which "fax answer" sets the serial
+-# device.  This allows non-root processes to grab the device from
+-# efax even if a previous process (e.g. login) has changed it.
+-# Comment out if you don't need to reset device ownership.
+-
+-OWNER=root.tty		# typical
+-MODE=666		# anybody
+-# MODE=660		# only owner & group
+-
+-# Regular expression for efax exit codes in log files that will
+-# *not* be saved.  For example, use [145] to ignore exits due to
+-# `locked' (1), `no modem' (4), and `signal' (5) conditions
+-
+-NOLOG='[145]'
+-
+-# ****************************************************************
+-# --- End of user configuration section ---
+-# ****************************************************************
++# Read config file
++. /etc/sysconfig/efax
  
- # Dial string prefix and suffix such as T for tone dialing, P for
- # pulse dialing, 9 to get an external line, commas for delays or
+ # --- source configuration files
+ 
