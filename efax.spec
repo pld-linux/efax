@@ -10,7 +10,7 @@ Copyright:	GPL
 Group:		Applications/Communications
 Group(pl):	Aplikacje/Komunikacja
 Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
-Patch0:		efax.patch
+Patch:		efax.patch
 Requires:	ghostscript
 Buildroot:	/tmp/%{name}-%{version}-root
 
@@ -41,14 +41,14 @@ bulunmaktadýr.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -p1
 
 %build
 make CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/usr/{bin,man/man1}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 make install \
