@@ -1,0 +1,77 @@
+diff -Nur efax-0.9.orig/Makefile efax-0.9/Makefile
+--- efax-0.9.orig/Makefile	Fri Mar 12 02:00:34 1999
++++ efax-0.9/Makefile	Wed Apr  7 11:05:40 1999
+@@ -9,7 +9,7 @@
+ # is undefined
+ 
+ CFLAGS=
+-LDFLAGS=
++LDFLAGS=-s
+ 
+ # Change the following to the destination directories for
+ # binaries and man pages. Probably /usr/bin and /usr/man on
+diff -Nur efax-0.9.orig/efaxio.c efax-0.9/efaxio.c
+--- efax-0.9.orig/efaxio.c	Tue Mar  2 07:15:44 1999
++++ efax-0.9/efaxio.c	Wed Apr  7 11:10:52 1999
+@@ -2,6 +2,7 @@
+ #include <signal.h>    
+ #include <stdio.h>
+ #include <string.h>
++#include <time.h>
+ 
+ #include "efaxio.h"		/* EFAX */
+ #include "efaxmsg.h"
+diff -Nur efax-0.9.orig/fax efax-0.9/fax
+--- efax-0.9.orig/fax	Wed Mar 24 09:07:28 1999
++++ efax-0.9/fax	Wed Apr  7 11:07:28 1999
+@@ -17,9 +17,9 @@
+ # The names of the fax script, efax and efix, including full path
+ # if necessary.
+ 
+-FAX=fax
+-EFAX=efax
+-EFIX=efix
++FAX=/usr/bin/fax
++EFAX=/usr/bin/efax
++EFIX=/usr/bin/efix
+ 
+ # The device to which the fax modem is connected (e.g. ttya for
+ # /dev/ttya).  Use a dial-out (cua) device if available.  If
+@@ -28,23 +28,23 @@
+ # /dev/modem is a link to /dev/cua1, then getty, uucp, kermit,
+ # pppd, dip, etc. must *all* use either /dev/modem or /dev/cua1.
+ 
+-DEV=cua1
++DEV=modem
+ 
+ # Your fax number in international format, 20 characters maximum.
+ # Use only digits, spaces, and the "+" character.
+ 
+-FROM="+1 800 555 5555"
++FROM="+0 000 000 0000"
+ 
+ # Your name as it should appear on the page header.
+ 
+-NAME="Put Your Name Here"
++NAME="from PLD system"
+ 
+ # The preferred page size for creating and printing faxes.
+ # Allowed values are "letter", "legal", and "a4".
+ 
+-PAGE=letter
++# PAGE=letter
+ # PAGE=legal
+-# PAGE=a4
++PAGE=a4
+ 
+ # The type of printer. Use 'pcl' for HP-PCL or 'ps' for
+ # Postscript.  See definition of PRINT (below) for more options.
+@@ -67,7 +67,7 @@
+ # The name of the Ghostscript executable including full path if
+ # necessary.  Only required if faxing Postscript files.
+ 
+-GS=gs
++GS=/usr/bin/gs
+ 
+ # Dial string prefix and suffix such as T for tone dialing, P for
+ # pulse dialing, 9 to get an external line, commas for delays or
