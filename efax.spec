@@ -6,33 +6,31 @@ Summary(tr):	1 veya 2 sýnýfý modemler üzerinden fax gönderir
 Name:		efax
 Version:	0.9
 Release:	1
-Copyright:	GPL
+License:	GPL
 Group:		Applications/Communications
 Group(pl):	Aplikacje/Komunikacja
-Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
-Patch:		efax.patch
+Source0:	ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
+Patch0:		efax.patch
 Requires:	ghostscript
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-This is a program to send and receive faxes over class 1 or
-class 2 fax modems.  It has a nice interface to help 
-facilitate faxing.
+This is a program to send and receive faxes over class 1 or class 2
+fax modems. It has a nice interface to help facilitate faxing.
 
 %description -l de
-Dies ist ein Programm zum Versenden und Empfangen von 
-Faxnachrichten über Faxmodems der Klasse 2. Dank
-seiner attraktiven Bedieneroberfläche wird das Faxen zum
-Kinderspiel
+Dies ist ein Programm zum Versenden und Empfangen von Faxnachrichten
+über Faxmodems der Klasse 2. Dank seiner attraktiven
+Bedieneroberfläche wird das Faxen zum Kinderspiel
 
 %description -l fr
-C'est un programme pour envoyer et recevoir des messages sur des modems de
-classe 1 ou 2. Il posséde une interface agréable pour faciliter l'envoi
-des fax.
+C'est un programme pour envoyer et recevoir des messages sur des
+modems de classe 1 ou 2. Il posséde une interface agréable pour
+faciliter l'envoi des fax.
 
 %description -l pl
-Program umo¿liwiaj±cy wysy³anie i odbieranie faksów faksmodemami klasy 1 
-oraz 2. Program ten posiada ³atwy interfejs u³atwiaj±cy faksowanie.
+Program umo¿liwiaj±cy wysy³anie i odbieranie faksów faksmodemami klasy
+1 oraz 2. Program ten posiada ³atwy interfejs u³atwiaj±cy faksowanie.
 
 %description -l tr
 Bu program ile 1 veya 2 sýnýfý modemlerle fax gönderilebilir. Fax
