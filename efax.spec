@@ -11,7 +11,7 @@ Group:		Applications/Communications
 Group(pl):	Aplikacje/Komunikacja
 Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
 Patch0:		efax.patch
-Requires:	gs
+Requires:	ghostscript
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -77,6 +77,7 @@ rm -rf $RPM_BUILD_ROOT
   [0.9-1]
 - split /usr/bin/fax into two files: fax and config
 - move fax config file to /etc/sysconfig
+- change "Requires: ghostscript"
 
 * Wed Apr  7 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.9-1]
