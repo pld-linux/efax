@@ -64,7 +64,7 @@ gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man*/* \
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(644, root, root, 755)
+%defattr(644,root,root,755)
 %doc *.gz
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/efax
 %attr(755,root,root) %{_bindir}/fax
