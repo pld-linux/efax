@@ -1,7 +1,7 @@
 Summary:	Sends and receives faxes over class 1 or class 2 modems
 Summary(de):	Sendet und empfängt Faxe über Modems der Klassen 1 und 2
 Summary(fr):	Envoie et reçoit des faxs sur des modems classe 1 ou 2
-Summary(pl):	Wysy³anie i odbieranie faxów modemami klasy 1 oraz 2
+Summary(pl):	Wysy³anie i odbieranie faksów modemami klasy 1 oraz 2
 Summary(tr):	1 veya 2 sýnýfý modemler üzerinden fax gönderir
 Name:		efax
 Version:	0.9a
