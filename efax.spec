@@ -52,7 +52,7 @@ install -d $RPM_BUILD_ROOT/usr/{bin,man/man1}
 install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 make install \
-	BINDIR=$RPM_BUILD_ROOT/usr/bin \
+	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
 	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 
 install efax.conf $RPM_BUILD_ROOT/etc/sysconfig/efax
@@ -67,15 +67,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644, root, root, 755)
 %doc *.gz
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/efax
-%attr(755,root,root) /usr/bin/fax
-%attr(755,root,root) /usr/bin/efax
-%attr(755,root,root) /usr/bin/efix
+%attr(755,root,root) %{_bindir}/fax
+%attr(755,root,root) %{_bindir}/efax
+%attr(755,root,root) %{_bindir}/efix
 %{_mandir}/man1/*.gz
 
 %changelog
 * Tue Apr 13 1999 Jacek Smyda <smyda@posexperts.com.pl>
   [0.9-1]
-- split /usr/bin/fax into two files: fax and config
+- split %{_bindir}/fax into two files: fax and config
 - move fax config file to /etc/sysconfig
 - change "Requires: ghostscript"
 
