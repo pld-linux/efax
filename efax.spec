@@ -9,6 +9,7 @@ Release:	8
 License:	GPL
 Group:		Applications/Communications
 Source0:	ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
+# Source0-md5: 23bd3767f87c455c58ccae7f88bce725
 Patch0:		%{name}.patch
 Patch1:		%{name}-nullptr.patch
 Requires:	ghostscript
