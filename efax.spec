@@ -42,14 +42,14 @@ bulunmaktadýr.
 %patch -p1
 
 %build
-make CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"
+%{__make} CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 install -d $RPM_BUILD_ROOT/etc/sysconfig
 
-make install \
+%{__make} install \
 	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
 	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 
