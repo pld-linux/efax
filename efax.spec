@@ -53,11 +53,11 @@ install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 make install \
 	BINDIR=$RPM_BUILD_ROOT/usr/bin \
-	MANDIR=$RPM_BUILD_ROOT/usr/man
+	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 
 install efax.conf $RPM_BUILD_ROOT/etc/sysconfig/efax
 
-gzip -9nf $RPM_BUILD_ROOT/usr/man/man*/* \
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man*/* \
 	README
 
 %clean
@@ -70,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/bin/fax
 %attr(755,root,root) /usr/bin/efax
 %attr(755,root,root) /usr/bin/efix
-/usr/man/man1/*.gz
+%{_mandir}/man1/*.gz
 
 %changelog
 * Tue Apr 13 1999 Jacek Smyda <smyda@posexperts.com.pl>
