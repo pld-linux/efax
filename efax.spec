@@ -12,7 +12,7 @@ Group(pl):	Aplikacje/Komunikacja
 Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
 Patch:		efax.patch
 Requires:	ghostscript
-Buildroot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 This is a program to send and receive faxes over class 1 or
