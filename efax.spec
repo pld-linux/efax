@@ -9,9 +9,9 @@ Release:	1
 Copyright:	GPL
 Group:		Applications/Communications
 Group(pl):	Aplikacje/Komunikacja
-Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/efax-0.9.tar.gz
-Patch:		efax-0.9.patch
-Patch3:		efax-08a-64bit.patch
+Source:		ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
+Patch0:		efax.patch
+Requires:	gs
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -40,35 +40,43 @@ iletiþimini kolaylaþtýrmak için programýn güzel bir kullanýcý arayüzü
 bulunmaktadýr.
 
 %prep
-%setup
-%patch -p1
-
-#%ifarch alpha
-#%patch3 -p1
-#%endif
+%setup -q
+%patch0 -p1
 
 %build
-make CFLAGS="$RPM_OPT_FLAGS"
+make CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"
 
 %install
+rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/usr/{bin,man/man1}
-make install BINDIR=$RPM_BUILD_ROOT/usr/bin MANDIR=$RPM_BUILD_ROOT/usr/man
-gzip -9nf $RPM_BUILD_ROOT/usr/man/man*/*
+
+make install \
+	BINDIR=$RPM_BUILD_ROOT/usr/bin \
+	MANDIR=$RPM_BUILD_ROOT/usr/man
+
+gzip -9nf $RPM_BUILD_ROOT/usr/man/man*/* \
+	README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, 755)
-%doc README COPYING
+%doc *.gz
 %config %attr(755,root,root) /usr/bin/fax
 %attr(755,root,root) /usr/bin/efax
 %attr(755,root,root) /usr/bin/efix
 /usr/man/man1/*.gz
 
 %changelog
-* Wed Apr  7 1999 Jacek Smyda <smyda@posexperts.com.pl>
+* Wed Apr  7 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.9-1]
+- gzipping %doc and removed COPYNG from %doc (copyright statment is in
+  Copyright field),
+- added "rm -rf $RPM_BUILD_ROOT" on top %install,
+- added "Requires: gs".
+
+* Wed Apr  7 1999 Jacek Smyda <smyda@posexperts.com.pl>
 - finally 0.9
 - translations for pl
 - gzip man pages
