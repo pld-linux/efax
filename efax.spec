@@ -5,12 +5,14 @@ Summary(pl):	wysy³anie i odbieranie faxów modemami klasy 1 oraz 2
 Summary(tr):	1 veya 2 sýnýfý modemler üzerinden fax gönderir
 Name:		efax
 Version:	0.9
-Release:	1
+Release:	8
 License:	GPL
 Group:		Applications/Communications
+Group(de):	Applikationen/Kommunikation
 Group(pl):	Aplikacje/Komunikacja
 Source0:	ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
-Patch0:		efax.patch
+Patch0:		%{name}.patch
+Patch1:		%{name}-nullptr.patch
 Requires:	ghostscript
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -39,15 +41,15 @@ bulunmaktadýr.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
-%{__make} CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"
+%{__make} CFLAGS="%{rpmcflags} -ansi" LDFLAGS="%{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
-install -d $RPM_BUILD_ROOT/etc/sysconfig
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1,/etc/sysconfig,/var/spool/fax}
 
 %{__make} install \
 	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
@@ -55,8 +57,7 @@ install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 install efax.conf $RPM_BUILD_ROOT/etc/sysconfig/efax
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man*/* \
-	README
+gzip -9nf README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -68,4 +69,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fax
 %attr(755,root,root) %{_bindir}/efax
 %attr(755,root,root) %{_bindir}/efix
-%{_mandir}/man1/*.gz
+%{_mandir}/man1/*
+/var/spool/fax
