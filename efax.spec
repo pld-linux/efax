@@ -31,8 +31,8 @@ classe 1 ou 2. Il posséde une interface agréable pour faciliter l'envoi
 des fax.
 
 %description -l pl
-Program umo¿liwiaj±cy wysy³anie i odbieranie faxów faxmodemami klasy 1 
-oraz 2. Program ten posiada ³atwy interface u³atwiaj±cy faxowanie.
+Program umo¿liwiaj±cy wysy³anie i odbieranie faksów faksmodemami klasy 1 
+oraz 2. Program ten posiada ³atwy interfejs u³atwiaj±cy faksowanie.
 
 %description -l tr
 Bu program ile 1 veya 2 sýnýfý modemlerle fax gönderilebilir. Fax
