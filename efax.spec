@@ -8,8 +8,6 @@ Version:	0.9
 Release:	8
 License:	GPL
 Group:		Applications/Communications
-Group(de):	Applikationen/Kommunikation
-Group(pl):	Aplikacje/Komunikacja
 Source0:	ftp://sunsite.unc.edu/pub/Linux/apps/comm/fax/%{name}-%{version}.tar.gz
 Patch0:		%{name}.patch
 Patch1:		%{name}-nullptr.patch
