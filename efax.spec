@@ -71,31 +71,3 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/efax
 %attr(755,root,root) %{_bindir}/efix
 %{_mandir}/man1/*.gz
-
-%changelog
-* Tue Apr 13 1999 Jacek Smyda <smyda@posexperts.com.pl>
-  [0.9-1]
-- split %{_bindir}/fax into two files: fax and config
-- move fax config file to /etc/sysconfig
-- change "Requires: ghostscript"
-
-* Wed Apr  7 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.9-1]
-- gzipping %doc and removed COPYNG from %doc (copyright statment is in
-  Copyright field),
-- added "rm -rf $RPM_BUILD_ROOT" on top %install,
-- added "Requires: gs".
-
-* Wed Apr  7 1999 Jacek Smyda <smyda@posexperts.com.pl>
-- finally 0.9
-- translations for pl
-- gzip man pages
-
-* Mon Apr 27 1998 Prospector System <bugs@redhat.com>
-- translations modified for de, fr, tr
-
-* Wed Oct 22 1997 Michael Fulbright <msf@redhat.com>
-- cleaned spec file to new standard, confirmed package is up to date
-
-* Tue Mar 25 1997 Erik Troan <ewt@redhat.com>
-- Added efax-08a-64bit.patch from David Mosberger
