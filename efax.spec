@@ -55,14 +55,12 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1,/etc/sysconfig,/var/spool/
 
 install efax.conf $RPM_BUILD_ROOT/etc/sysconfig/efax
 
-gzip -9nf README
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc README
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/efax
 %attr(755,root,root) %{_bindir}/fax
 %attr(755,root,root) %{_bindir}/efax
