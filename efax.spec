@@ -4,12 +4,12 @@ Summary(fr):	Envoie et reçoit des faxs sur des modems classe 1 ou 2
 Summary(pl):	Wysy³anie i odbieranie faxów modemami klasy 1 oraz 2
 Summary(tr):	1 veya 2 sýnýfý modemler üzerinden fax gönderir
 Name:		efax
-Version:	0.9
-Release:	9
+Version:	0.9a
+Release:	1
 License:	GPL
 Group:		Applications/Communications
-Source0:	ftp://ftp.metalab.unc.edu/pub/Linux/apps/serialcomm/fax/%{name}-%{version}.tar.gz
-# Source0-md5: 23bd3767f87c455c58ccae7f88bce725
+Source0:	http://www.cce.com/efax/download/%{name}-%{version}-001114.tar.gz
+# Source0-md5:	28abef47d9700eb1c20bf5770565aa7d
 Patch0:		%{name}.patch
 Patch1:		%{name}-nullptr.patch
 URL:		http://www.cce.com/efax/
@@ -40,7 +40,7 @@ iletiþimini kolaylaþtýrmak için programýn güzel bir kullanýcý arayüzü
 bulunmaktadýr.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-001114
 %patch0 -p1
 %patch1 -p1
 
