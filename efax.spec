@@ -63,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README
-%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/efax
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/efax
 %attr(755,root,root) %{_bindir}/fax
 %attr(755,root,root) %{_bindir}/efax
 %attr(755,root,root) %{_bindir}/efix
