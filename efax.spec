@@ -1,8 +1,8 @@
 Summary:	Sends and receives faxes over class 1 or class 2 modems
-Summary(de):	Sendet und empfängt Faxe über Modems der Klassen 1 und 2
-Summary(fr):	Envoie et reçoit des faxs sur des modems classe 1 ou 2
-Summary(pl):	Wysy³anie i odbieranie faksów modemami klasy 1 oraz 2
-Summary(tr):	1 veya 2 sınıfı modemler üzerinden fax gönderir
+Summary(de.UTF-8):   Sendet und empfÃ¤ngt Faxe Ã¼ber Modems der Klassen 1 und 2
+Summary(fr.UTF-8):   Envoie et reÃ§oit des faxs sur des modems classe 1 ou 2
+Summary(pl.UTF-8):   WysyÅ‚anie i odbieranie faksÃ³w modemami klasy 1 oraz 2
+Summary(tr.UTF-8):   1 veya 2 sÄ±nÄ±fÄ± modemler Ã¼zerinden fax gÃ¶nderir
 Name:		efax
 Version:	0.9a
 Release:	1
@@ -20,24 +20,24 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 This is a program to send and receive faxes over class 1 or class 2
 fax modems. It has a nice interface to help facilitate faxing.
 
-%description -l de
+%description -l de.UTF-8
 Dies ist ein Programm zum Versenden und Empfangen von Faxnachrichten
-über Faxmodems der Klasse 2. Dank seiner attraktiven
-Bedieneroberfläche wird das Faxen zum Kinderspiel
+Ã¼ber Faxmodems der Klasse 2. Dank seiner attraktiven
+BedieneroberflÃ¤che wird das Faxen zum Kinderspiel
 
-%description -l fr
+%description -l fr.UTF-8
 C'est un programme pour envoyer et recevoir des messages sur des
-modems de classe 1 ou 2. Il posséde une interface agréable pour
+modems de classe 1 ou 2. Il possÃ©de une interface agrÃ©able pour
 faciliter l'envoi des fax.
 
-%description -l pl
-Program umo¿liwiaj±cy wysy³anie i odbieranie faksów faksmodemami klasy
-1 oraz 2. Program ten posiada ³atwy interfejs u³atwiaj±cy faksowanie.
+%description -l pl.UTF-8
+Program umoÅ¼liwiajÄ…cy wysyÅ‚anie i odbieranie faksÃ³w faksmodemami klasy
+1 oraz 2. Program ten posiada Å‚atwy interfejs uÅ‚atwiajÄ…cy faksowanie.
 
-%description -l tr
-Bu program ile 1 veya 2 sınıfı modemlerle fax gönderilebilir. Fax
-iletişimini kolaylaştırmak için programın güzel bir kullanıcı arayüzü
-bulunmaktadır.
+%description -l tr.UTF-8
+Bu program ile 1 veya 2 sÄ±nÄ±fÄ± modemlerle fax gÃ¶nderilebilir. Fax
+iletiÅŸimini kolaylaÅŸtÄ±rmak iÃ§in programÄ±n gÃ¼zel bir kullanÄ±cÄ± arayÃ¼zÃ¼
+bulunmaktadÄ±r.
 
 %prep
 %setup -q -n %{name}-%{version}-001114
