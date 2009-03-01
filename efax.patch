@@ -397,7 +397,7 @@ diff -urN efax-0.9a-001114.org/efax.conf efax-0.9a-001114/efax.conf
 +# efax even if a previous process (e.g. login) has changed it.
 +# Comment out if you don't need to reset device ownership.
 +
-+OWNER=root.ttyS		# typical
++OWNER=root.dialout		# typical
 +# MODE=666		# anybody
 +MODE=660		# only owner & group
 +
