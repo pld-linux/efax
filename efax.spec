@@ -5,7 +5,7 @@ Summary(pl.UTF-8):	Wysyłanie i odbieranie faksów modemami klasy 1 oraz 2
 Summary(tr.UTF-8):	1 veya 2 sınıfı modemler üzerinden fax gönderir
 Name:		efax
 Version:	0.9a
-Release:	3
+Release:	4
 License:	GPL
 Group:		Applications/Communications
 Source0:	http://www.cce.com/efax/download/%{name}-%{version}-001114.tar.gz
@@ -14,6 +14,7 @@ Patch0:		%{name}.patch
 Patch1:		%{name}-nullptr.patch
 URL:		http://www.cce.com/efax/
 Requires:	ghostscript
+Requires:	setup >= 2.6.1-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
