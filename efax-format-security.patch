@@ -1,0 +1,15 @@
+--- efax-0.9a-001114/efaxlib.c.orig
++++ efax-0.9a-001114/efaxlib.c
+@@ -1784,10 +1784,10 @@
+       tiffinit(f) ;		/* rewind & update TIFF header */
+       break ;
+     case O_PCL:
+-      fprintf ( f->f, PCLEND ) ;
++      fputs ( PCLEND, f->f ) ;
+       break ;
+     case O_PS:
+-      fprintf ( f->f, PSPAGEEND ) ;
++      fputs ( PSPAGEEND, f->f ) ;
+       if ( f->fname || page<0 ) fprintf ( f->f, PSEND, f->lastpageno ) ;
+       break ;
+     case O_PCX:

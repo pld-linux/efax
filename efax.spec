@@ -5,13 +5,16 @@ Summary(pl.UTF-8):	Wysyłanie i odbieranie faksów modemami klasy 1 oraz 2
 Summary(tr.UTF-8):	1 veya 2 sınıfı modemler üzerinden fax gönderir
 Name:		efax
 Version:	0.9a
-Release:	4
+Release:	5
 License:	GPL
 Group:		Applications/Communications
 Source0:	http://www.cce.com/efax/download/%{name}-%{version}-001114.tar.gz
 # Source0-md5:	28abef47d9700eb1c20bf5770565aa7d
 Patch0:		%{name}.patch
 Patch1:		%{name}-nullptr.patch
+Patch2:		%{name}-format-security.patch
+Patch3:		%{name}-fno-common.patch
+Patch4:		%{name}-nostrip.patch
 URL:		http://www.cce.com/efax/
 Requires:	ghostscript
 Requires:	setup >= 2.6.1-1
@@ -44,9 +47,12 @@ bulunmaktadır.
 %setup -q -n %{name}-%{version}-001114
 %patch -P0 -p1
 %patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
 
 %build
-%{__make} CFLAGS="%{rpmcflags} -ansi" LDFLAGS="%{rpmldflags}"
+%{__make} CFLAGS="%{rpmcflags} %{rpmcppflags} -ansi" LDFLAGS="%{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT

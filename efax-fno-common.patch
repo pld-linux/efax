@@ -1,0 +1,23 @@
+--- efax-0.9a-001114/efaxlib.h.orig
++++ efax-0.9a-001114/efaxlib.h
+@@ -208,7 +208,7 @@
+ /* Bit reversal lookup tables (note that the `normalbits' array
+    is the one actually used for the bit reversal.  */
+
+-uchar reversebits [ 256 ], normalbits [ 256 ] ;
++extern uchar reversebits [ 256 ], normalbits [ 256 ] ;
+
+ void initbittab(void) ;
+
+--- efax-0.9a-001114/efaxlib.c.orig
++++ efax-0.9a-001114/efaxlib.c
+@@ -23,6 +23,9 @@
+ extern t4tab wtab [ ( 64 + 27 + 13 ) + 1 ] ; /* T.4 coding tables */
+ extern t4tab btab [ ( 64 + 27 + 13 ) + 1 ] ;
+
++/* Bit reversal lookup tables.  */
++uchar reversebits [ 256 ], normalbits [ 256 ] ;
++
+ short short256 = 256 ;		/* for endian-ness detection */
+
+ /* Make sure printf strings have only %d escapes and n or fewer
